@@ -26,6 +26,7 @@ let skins = [
 let botActions = [];
 let mousePos = [];
 Server.on("connection", (t) => {
+  console.log("connected client");
   storeSocket = t;
 
   t.onmessage = (msg) => {

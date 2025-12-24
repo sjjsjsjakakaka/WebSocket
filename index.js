@@ -1,4 +1,5 @@
 const WebSocket = require('ws');
+let wsData = {socket: null};
 
 // Use process.env.PORT for Railway deployment
 const PORT = process.env.PORT || 3000;
@@ -10,6 +11,11 @@ const wss = new WebSocket.Server({ port: PORT }, () => {
 // Listen for connection events
 wss.on('connection', (ws) => {
   console.log("A new client connected!");
+  wsData.socket = ws;
+  wss.on("message", (msg) => {
+    let parsedMsg = JSON.parse(msg);
+    console.log(parsedMsg);
+  });
 
   // Respond immediately
   ws.send("Welcome, client!");

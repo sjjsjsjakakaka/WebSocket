@@ -1,19 +1,36 @@
-const WebSocket = require("ws");
+import WebSocket from "ws";
 
-// Server (accept clients)
-let server = new WebSocket.Server({ port: 8081 });
+// ===== Server: Accept local clients =====
+const server = new WebSocket.Server({ port: 8081 });
+
 server.on("connection", (clientSocket) => {
   console.log("Client connected");
 
   clientSocket.on("message", (msg) => {
     console.log("Client says:", msg.toString());
-    clientSocket.send("Hello client!");
+
+    // Optionally forward this message to external WebSocket
+    if (external.readyState === WebSocket.OPEN) {
+      external.send(msg.toString());
+    }
   });
 });
 
-// Client (connect to Railway or moomoo.io)
-const external = new WebSocket("wss://websocketbots-production-76f0.up.railway.app");
+// ===== Client: Connect to Railway WebSocket =====
+const external = new WebSocket("wss://websocket-server-production-f26d.up.railway.app");
 
-external.on("open", () => console.log("Connected to external server!"));
-external.on("message", (msg) => console.log("External message:", msg.toString()));
-external.on("error", (err) => console.error(err));
+external.on("open", () => console.log("Connected to Railway WebSocket!"));
+
+external.on("message", (msg) => {
+  console.log("Message from Railway:", msg.toString());
+
+  // Optionally broadcast to all connected clients
+  server.clients.forEach((c) => {
+    if (c.readyState === WebSocket.OPEN) {
+      c.send(msg.toString());
+    }
+  });
+});
+
+external.on("error", (err) => console.error("External WebSocket error:", err));
+external.on("close", () => console.log("Disconnected from Railway WebSocket"));

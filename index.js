@@ -12,10 +12,15 @@ const wss = new WebSocket.Server({ port: PORT }, () => {
 wss.on('connection', (ws) => {
   console.log("A new client connected!");
   wsData.socket = ws;
-  ws.on("message", (msg) => {
-    let parsedMsg = JSON.parse(msg);
-    console.log(parsedMsg);
-  });
+ws.on("message", (msg) => {
+  try {
+    const parsedMsg = JSON.parse(msg);
+    console.log("JSON:", parsedMsg);
+  } catch {
+    console.log("Raw message:", msg.toString());
+  }
+});
+
 
   // Respond immediately
   ws.send("Welcome, client!");

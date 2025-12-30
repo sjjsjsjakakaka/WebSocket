@@ -17,7 +17,7 @@ server.on("connection", (clientSocket) => {
 });
 
 // ===== Client: Connect to Railway WebSocket =====
-const external = new WebSocket("wss://websocket-server-production-f26d.up.railway.app");
+const external = new WebSocket("wss://websocketbots-production-76f0.up.railway.app");
 
 external.on("open", () => console.log("Connected to Railway WebSocket!"));
 

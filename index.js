@@ -1,7 +1,19 @@
-import WebSocket from "ws";
+const WebSocket = require("ws");
 
-const ws = new WebSocket("wss://websocketbots-production-76f0.up.railway.app");
+// Server (accept clients)
+let server = new WebSocket.Server({ port: 8081 });
+server.on("connection", (clientSocket) => {
+  console.log("Client connected");
 
-ws.on("open", () => console.log("Connected!"));
-ws.on("message", msg => console.log("Message:", msg.toString()));
-ws.on("error", err => console.log("Error:", err));
+  clientSocket.on("message", (msg) => {
+    console.log("Client says:", msg.toString());
+    clientSocket.send("Hello client!");
+  });
+});
+
+// Client (connect to Railway or moomoo.io)
+const external = new WebSocket("wss://websocketbots-production-76f0.up.railway.app");
+
+external.on("open", () => console.log("Connected to external server!"));
+external.on("message", (msg) => console.log("External message:", msg.toString()));
+external.on("error", (err) => console.error(err));

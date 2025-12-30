@@ -11,6 +11,7 @@ const wss = new WebSocket.Server({ port: PORT }, () => {
 // Listen for connection events
 wss.on('connection', (ws) => {
   console.log("A new client connected!");
+  wss.send("trueee");
   wsData.socket = ws;
 ws.on("message", (msg) => {
   try {
